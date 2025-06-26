@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || ['http://localhost:5173', 'https://note-nest-livid.vercel.app'],
   credentials: true
 }))
 
@@ -74,13 +74,19 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   res.status(500).json({ error: 'Internal server error' })
 })
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📚 API Endpoints:`)
-  console.log(`   POST /api/auth/login`)
-  console.log(`   GET  /api/notes`)
-  console.log(`   POST /api/notes`)
-  console.log(`   GET  /api/subscribe`)
-  console.log(`   POST /api/webhook`)
-  console.log(`   GET  /health`)
-}) 
+// Export the Express app for Vercel
+export default app
+
+// Only start server if not in Vercel environment
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`)
+    console.log(`📚 API Endpoints:`)
+    console.log(`   POST /api/auth/login`)
+    console.log(`   GET  /api/notes`)
+    console.log(`   POST /api/notes`)
+    console.log(`   GET  /api/subscribe`)
+    console.log(`   POST /api/webhook`)
+    console.log(`   GET  /health`)
+  })
+} 
